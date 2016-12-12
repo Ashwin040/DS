@@ -1,0 +1,168 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+
+
+struct node
+{
+    int info;
+    struct node *link;
+};
+typedef struct node* NODE;
+NODE getnode()
+{
+    NODE x;
+    x=(NODE)malloc(sizeof(struct node));
+    if(x==NULL)
+        printf(" creation of node not possible \n");
+    return x;
+}
+NODE insert_pos(int item,NODE last,int pos)
+{
+    NODE temp;
+    temp=getnode();
+    temp->info=item;
+    if(pos<1||last==NULL&&pos>1)
+    {
+        printf(" invalid position\n");
+        return last;
+    }
+    if(last==NULL&&pos==1)
+    {
+        temp->link=temp;
+        return temp;
+    }
+    if(pos==1)
+    {
+        temp->link=last->link;
+        last->link=temp;
+        return last;
+    }
+    NODE prev=NULL;
+    NODE cur=last->link;
+    int count=1;
+    while(cur!=last&&count!=pos)
+    {
+        prev=cur;
+        cur=cur->link;
+        count++;
+    }
+    if(cur==last&&count==pos-1)
+    {
+        temp->link=last->link;
+        last->link=temp;
+        return temp;
+    }
+    if(count!=pos)
+    {
+        printf(" invalid position \n");
+        free(temp);
+        return last;
+    }
+    else{
+        prev->link=temp;
+        temp->link=cur;
+        return last;
+    }
+}
+NODE delete_pos(NODE last,int pos)
+{
+    NODE temp;
+    if(pos<1||last==NULL)
+    {
+        printf(" invalid position \n");
+        return NULL;
+    }
+    if(last->link==last&&pos==1)
+    {
+        printf(" the item deleted is %d\n",last->info);
+        free(last);
+        return NULL;
+    }
+    if(pos==1)
+    {
+        temp=last->link;
+        last->link=temp->link;
+        printf(" the item deleted is %d\n",temp->info);
+        free(temp);
+        return last;
+    }
+    NODE prev=NULL;
+    NODE cur=last->link;
+    int count=1;
+    while(cur!=last&&count!=pos)
+    {
+        prev=cur;
+        cur=cur->link;
+        count++;
+    }
+    if(cur==last&&count==pos)
+    {
+        prev->link=cur->link;
+        printf(" the item deleted is %d",cur->info);
+        free(cur);
+        return prev;
+    }
+    if(cur!=last&&count==pos)
+    {
+        prev->link=cur->link;
+        printf(" the item deleted is %d",cur->info);
+        free(cur);
+        return last;
+    }
+    else{
+        printf(" invalid position \n");
+        return last;
+    }
+
+
+}
+void display(NODE last)
+{
+    NODE cur;
+    if(last==NULL)
+    {
+        printf(" the list is empty \n");
+    }
+    if(last->link==last)
+    {
+        printf(" %d\n",last->info);
+    }
+    cur=last->link;
+    while(cur!=last)
+    {
+        printf(" %d\n",cur->info);
+        cur=cur->link;
+    }
+    printf("%d\n",cur->info);
+}
+void main()
+{
+    NODE last;
+    last=getnode();
+    last=NULL;
+    last->link=last;
+    int choice,pos,item;
+    for(;;)
+    {
+        printf(" enter the choice as \n 1. insert\n 2. delete\n 3. display\n");
+        scanf("%d",&choice);
+        switch(choice)
+        {
+            case 1: printf(" enter the item to be inseted /n");
+            scanf("%d",&item);
+            printf(" enter the position\n");
+            scanf("%d",&pos);
+            last=insert_pos(item,last,pos);
+            break;
+            case 2: printf(" enter the position\n");
+            scanf("%d",&pos);
+            last=delete_pos(last,pos);
+            break;
+            case 3: printf(" the items are \n");
+            display(last);
+            break;
+            default: exit(0);
+        }
+    }
+}
