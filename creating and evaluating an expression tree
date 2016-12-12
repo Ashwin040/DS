@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include<malloc.h>
+#include<math.h>
+struct node
+{
+    int info;
+    struct node *rlink;
+    struct node *llink;
+};
+typedef struct node* NODE;
+NODE getnode()
+{
+    NODE x;
+    x=(NODE)malloc(sizeof(struct node));
+    if(x==NULL)
+        printf(" creation of node not possible \n");
+    return x;
+}
+NODE insert_tree(char postfix[])
+{
+    NODE s[30],temp;
+    char symbol;
+    int i,k;
+    for(i=k=0;(symbol=postfix[i])!='\0';i++)
+    {
+        temp=getnode();
+        temp->info=symbol;
+        if(isalnum(symbol))
+        {
+            s[k++]=temp;
+        }
+        else
+        {
+            temp->rlink=s[--k];
+            temp->llink=s[--k];
+            s[k++]=temp;
+        }
+
+    }
+    return s[--k];
+
+}
+float eval(NODE root)
+{
+    float num;
+    switch(root->info)
+    {
+        case '+': return eval(root->llink)+eval(root->rlink);
+        case '-': return eval(root->llink)-eval(root->rlink);
+        case '*': return eval(root->llink)*eval(root->rlink);
+        case '/': return eval(root->llink)/eval(root->rlink);
+        case '^': return pow(eval(root->llink),eval(root->rlink));
+        case '$': return pow(eval(root->llink),eval(root->rlink));
+        default: if(isalpha(root->info))
+                    {
+                        printf("enter number to replace %c",root->info);
+                        scanf("%f",&num);
+                        return num;
+
+                    }
+                    else{
+                        return (root->info)-'0';
+                    }
+    }
+}
+int main()
+{
+    NODE root;
+    float sum;
+    root=getnode();
+    root=NULL;
+    char postfix[30];
+    printf(" enter a valid postfix expression \n");
+    scanf(" %s",postfix);
+    root=insert_tree(postfix);
+    sum=eval(root);
+    printf(" the value of the tree is %f\n",sum);
+    return 0;
+
+
+
+
+}
