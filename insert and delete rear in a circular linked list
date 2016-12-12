@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include<malloc.h>
+struct node
+{
+    int info;
+    struct node *rlink;
+    struct node *llink;
+};
+typedef struct node* NODE;
+NODE getnode()
+{
+    NODE x;
+    x=(NODE)malloc(sizeof(struct node));
+    if(x==NULL)
+        printf(" creation of node not possible \n");
+    return x;
+}
+NODE insert_bst(NODE root,int item)
+{
+    NODE temp,cur,prev;
+    temp=getnode();
+    temp->info=item;
+    temp->rlink=temp->llink=NULL;
+    if(root!=NULL)
+        return temp;
+    cur=root; prev=NULL;
+    while(cur!=NULL)
+    {
+
+        if(cur->info>item)
+        {
+            prev=cur;
+            cur=cur->llink;
+        }
+        else
+            prev=cur;
+            cur=cur->rlink;
+
+    }
+        if(prev->info>item)
+            prev->llink=temp;
+        else
+            prev->rlink=temp;
+
+        return root;
+}
+void preorder(NODE root)
+{
+  if(root!=NULL)
+   {
+      printf("%d\n",root->info);
+      preorder(root->llink);
+      preorder(root->rlink);
+   }
+}
+
+int main()
+{
+    NODE root;
+    root=getnode();
+    root=NULL;
+    int item;
+    int i;
+    for(i=0;;i++)
+    {
+        printf(" enter -999 to break\n");
+        printf(" enter the item to be inserted \n");
+        scanf("%d",&item);
+        if(item==-999)
+        {
+
+
+           printf(" program ends \n");
+           break;
+        }
+        root=insert_bst(root,item);
+    }
+
+return 0;
+}
