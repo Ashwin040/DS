@@ -1,0 +1,139 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <malloc.h>
+struct node
+{
+    int info;
+    struct node *rlink;
+    struct node *llink;
+};
+typedef struct node* NODE;
+NODE getnode()
+{
+    NODE x;
+    x=(NODE)malloc(sizeof(struct node));
+    if(x==NULL)
+        printf(" creation of node not possible \n");
+
+    return x;
+}
+NODE insert_order(int item,NODE first)
+{
+    NODE temp;
+    temp=getnode();
+    temp->info=item;
+    if(first==NULL)
+    {
+        return temp;
+    }
+    if(item<first->info)
+    {
+        temp->rlink=first;
+        first->llink=temp;
+        return temp;
+    }
+    else{
+        temp->rlink=first;
+        int count=0;
+        while(temp->rlink!=NULL&&count==0)
+        {
+            if(temp->info<temp->rlink->info)
+            {
+                count=1;
+                break;
+            }
+            else
+            {
+                temp->rlink=temp->rlink->rlink;
+                temp->llink=temp->rlink;
+            }
+        }
+            if(count==1)
+            {
+                NODE next=temp->rlink;
+                temp->llink=next->llink;
+                next->llink->rlink=temp;
+                temp->rlink=next;
+            }
+            else
+            {
+                NODE prev;
+                prev=temp->llink;
+                prev->rlink=temp;
+                temp->llink=prev;
+            }
+            return first;
+        }
+    }
+NODE rem(NODE first,int key)
+{
+    NODE cur;
+    if(first==NULL)
+    {
+        printf(" the list is empty \n");
+        return first;
+    }
+    cur=first;
+    while(cur!=NULL)
+    {
+        if(cur->info==key)
+        {
+            NODE prev=cur->llink;
+            NODE next=cur->rlink;
+            prev->rlink=next;
+            next->llink=prev;
+            printf(" the item deleted is %d\n",cur->info);
+            free(cur);
+            break;
+        }
+        cur=cur->rlink;
+
+    }
+    return first;
+
+}
+void display(NODE first)
+{
+    NODE cur;
+    if(first==NULL)
+        printf(" the list is empty \n");
+        return first;
+    cur=first;
+    while(cur!=NULL)
+    {
+        printf("%d\n",cur->info);
+    }
+
+
+}
+int main()
+{
+    int choice;
+    NODE first;
+    int item,key;
+    first=getnode();
+    first=NULL;
+    for(;;)
+    {
+        printf(" enter the choice as\n 1. insert\n 2. delete\n 3.display\n  ");
+        scanf("%d",&choice);
+        switch(choice)
+        {
+            case 1: printf(" enter the item to be inserted \n");
+                    scanf("%d",&item);
+                    first=insert_order(item,first);
+                    break;
+            case 2: printf(" enter the key to be deleted \n");
+                    scanf("%d",&key);
+                    first=rem(first,key);
+                    break;
+            case 3: printf(" the items are \n");
+                    display(first);
+                    break;
+            default: exit(0);
+
+        }
+    }
+
+    return 0;
+}
